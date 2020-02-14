@@ -7,7 +7,7 @@ ____   _________________________   ________ ___________
                    \/         \/         \/         \/ 
 ```
 # Verge-Ruby
-Verge-Ruby is a gem that makes it easy to work with Verge in ruby.
+Verge-Ruby is a gem that makes it easy to work with Verge in ruby. Tested using Ruby 2.5.1p57 on Ubuntu 18.04.
 
 ## Dependencies
 

@@ -8,7 +8,7 @@ describe VERGEClient::Client do
 
   def valid_client
     # For local testing ensure you have verged running correctly and use your own username / password here
-    VERGEClient::Client.new(user: 'vergerpc', password: 'rpcpassword')
+    VERGEClient::Client.new(user: 'vergerpcusername', password: 'rpcpassword')
   end
 
   it 'rejects bad credentials' do

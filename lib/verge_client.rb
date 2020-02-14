@@ -27,8 +27,8 @@ class VERGEClient
       self.host = 'localhost'
       self.port = 20102
       self.protocol = :http
-      self.user = ''
-      self.password = ''
+      self.user = 'rpcuser'
+      self.password = 'rpcpassword'
     end
 
   end

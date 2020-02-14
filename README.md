@@ -2,16 +2,16 @@
 ____   _________________________   ________ ___________
 \   \ /   /\_   _____/\______   \ /  _____/ \_   _____/
  \   Y   /  |    __)_  |       _//   \  ___  |    __)_ 
-  \     /   |        \ |    |   \\    \_\  \ |        \ 2016 VERGE
+  \     /   |        \ |    |   \\    \_\  \ |        \ 2020 VERGE
    \___/   /_______  / |____|_  / \______  //_______  /
                    \/         \/         \/         \/ 
 ```
-# VERGEClient
-VERGEClient is a gem that makes it easy to work with VERGE in ruby.
+# Verge-Ruby
+Verge-Ruby is a gem that makes it easy to work with Verge in ruby.
 
 ## Dependencies
 
-The only requirement is a running VERGE daemon ([verged](https://github.com/vergecurrency/verge)). Make sure to check out the [doc section](https://github.com/vergecurrency/verge/tree/master/doc) and follow the instructions for your os.
+The only requirement is a running Verge daemon ([verged](https://github.com/vergecurrency/verge)). Make sure to check out the [doc section](https://github.com/vergecurrency/verge/tree/master/doc) and follow the instructions for your os.
 NOTICE: by default verged will only allow local connections.
 
 ## Installation

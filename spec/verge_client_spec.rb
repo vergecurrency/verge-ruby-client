@@ -4,7 +4,7 @@ describe VERGEClient do
 
   def valid_client
     # make sure to replace these with the credentials from your own verged
-    VERGEClient.new(user: 'vergerpc', password: 'vergerpcpassword')
+    VERGEClient.new(user: 'vergerpcusername', password: 'vergerpcpassword')
   end
 
   it 'sets up and works with a valid client' do
@@ -21,7 +21,7 @@ describe VERGEClient do
 
   it 'configures itself properly' do
     VERGEClient.configure do |config|
-      config.user = 'vergerpc'
+      config.user = 'vergerpcusername'
       config.password = 'vergerpcpassword'
     end
     client = VERGEClient.new

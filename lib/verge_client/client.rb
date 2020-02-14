@@ -19,7 +19,9 @@ class VERGEClient
 
     def valid?
       post_body = { method: 'getinfo', id: Time.now.to_i }.to_json
-      http_post_request(post_body).class == Net::HTTPOK rescue false
+      http_post_request(post_body).class == Net::HTTPOK
+    rescue
+      false
     end
 
     def method_missing(name, *args)

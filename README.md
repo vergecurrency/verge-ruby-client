@@ -20,9 +20,9 @@ Add this line to your application's Gemfile:
 
     gem 'verge_client'
 
-Or install it yourself as:
+Or install it yourself as: (coming soon)
 
-    $ gem install verge_client
+    $ gem install verge_client (coming soon)
 
 ## Configuration
 
@@ -106,7 +106,7 @@ end
 <tr>
 <td> get_account_address </td>
 <td> [account] </td>
-<td> Returns the current VERGE address for receiving payments to this account. </td>
+<td> Returns the current Verge address for receiving payments to this account. </td>
 <td> No
 </td></tr>
 <tr>
@@ -422,4 +422,4 @@ For local testing, make sure to replace the user/password in `spec/client_spec.r
 
 ## Can't I just use a client for bitcoin or litecoin?
 
-Perhaps, but this way you don't need to worry about any current or future api inconsistencies. Plus, why use a tool built for an inferior alt coin?
+Perhaps, but this way you don't need to worry about any current or future api inconsistencies.

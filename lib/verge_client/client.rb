@@ -66,7 +66,7 @@ class VERGEClient
 
     def get_defaults
       VERGEClient.configuration.instance_variables.each.inject({}) {|hash, var|
-        hash[var.to_s.delete('@').to_sym] = VERGEClient.configuration.instance_variable_get(var);
+        hash[var.to_s.delete('@').to_sym] = VERGEClient.configuration.instance_variable_get(var)
         hash
       }
     end

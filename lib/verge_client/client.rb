@@ -101,7 +101,7 @@ class VERGEClient
     end
 
     # Fetches the default configuration for the VERGEClient.
-    def get_defaults
+    def defaults
       VERGEClient.configuration.instance_variables.each.with_object({}) do |var, hash|
         hash[var.to_s.delete('@').to_sym] = VERGEClient.configuration.instance_variable_get(var)
       end

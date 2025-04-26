@@ -3,6 +3,7 @@
 require 'verge_client/version'
 require 'verge_client/client'
 
+# Main client for interacting with a VERGE RPC server.
 class VERGEClient
   def initialize(options = {})
     super()

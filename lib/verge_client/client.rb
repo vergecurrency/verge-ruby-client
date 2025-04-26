@@ -9,6 +9,7 @@ require 'errors/http_error'
 require 'errors/rpc_error'
 require 'errors/invalid_method_error'
 
+# Handles low-level RPC HTTP communication with the VERGE server.
 class VERGEClient
   class Client
     attr_accessor :options
@@ -31,7 +32,7 @@ class VERGEClient
       response = http_post_request(get_post_body(name, args))
       get_response_data(response)
     end
-	
+
     def respond_to_missing?(method_name, include_private = false)
       @client.respond_to?(method_name) || super
     end

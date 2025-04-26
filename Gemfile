@@ -9,6 +9,6 @@ gemspec
 group :development, :test do
   gem 'bundler', '>= 2.1'
   gem 'rake', '~> 13.0'
-  gem 'rubocop', require: false
   gem 'rspec', '~> 3.12'
+  gem 'rubocop', require: false
 end

@@ -3,6 +3,7 @@
 # Raised when an invalid method is invoked.
 
 class VERGEClient
+# Raised when an invalid method is invoked.
   class InvalidMethodError < StandardError
     attr_accessor :message
 

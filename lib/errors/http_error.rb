@@ -3,7 +3,7 @@
 # Raised when an HTTP error occurs during an RPC request.
 
 class VERGEClient
-# Raised when an HTTP error occurs during an RPC request.
+  # Raised when an HTTP error occurs during an RPC request.
   class HTTPError < StandardError
     attr_accessor :object, :message
 

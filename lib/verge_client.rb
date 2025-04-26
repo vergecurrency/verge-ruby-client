@@ -6,7 +6,6 @@ require 'verge_client/version'
 require 'verge_client/client'
 
 # Main client for interacting with a VERGE RPC server.
-
 class VERGEClient
   def initialize(options = {})
     super()
@@ -30,8 +29,7 @@ class VERGEClient
   def self.configure
     yield(configuration) if block_given?
   end
-# Configuration for the VERGE Client.
-
+  # Configuration for the VERGE Client.
   class Configuration
     attr_accessor :host, :port, :protocol, :user, :password
 

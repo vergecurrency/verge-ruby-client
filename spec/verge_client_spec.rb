@@ -5,6 +5,7 @@ require 'verge_client/client'
 describe VERGEClient do
   def valid_client
     # make sure to replace these with the credentials from your own verged
+	
     VERGEClient.new(user: 'vergerpcusername', password: 'vergerpcpassword')
   end
 

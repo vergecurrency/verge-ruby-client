@@ -10,8 +10,10 @@ require 'errors/rpc_error'
 require 'errors/invalid_method_error'
 
 # Handles low-level RPC HTTP communication with the VERGE server.
+
 class VERGEClient
 # Handles low-level RPC HTTP communication with the VERGE server.
+
   class Client
     attr_accessor :options
 

@@ -9,6 +9,7 @@ require 'errors/invalid_method_error'
 describe VERGEClient::Client do
   def valid_client
     # For local testing ensure you have verged running correctly and use your own username / password here
+	
     VERGEClient::Client.new(user: 'vergerpcusername', password: 'rpcpassword')
   end
 

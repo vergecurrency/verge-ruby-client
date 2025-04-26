@@ -1,9 +1,12 @@
 # frozen_string_literal: true
+
 # Main client for interacting with the VERGE Daemon (verged) RPC.
+
 require 'verge_client/version'
 require 'verge_client/client'
 
 # Main client for interacting with a VERGE RPC server.
+
 class VERGEClient
   def initialize(options = {})
     super()
@@ -11,6 +14,7 @@ class VERGEClient
   end
 
   # Delegate everything to the 'real' Client
+  
   def method_missing(name, ...)
     @client.send(name, ...)
   end
@@ -27,6 +31,7 @@ class VERGEClient
     yield(configuration) if block_given?
   end
 # Configuration for the VERGE Client.
+
   class Configuration
     attr_accessor :host, :port, :protocol, :user, :password
 

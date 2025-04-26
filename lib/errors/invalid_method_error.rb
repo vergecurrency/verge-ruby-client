@@ -1,5 +1,7 @@
 # frozen_string_literal: true
+
 # Raised when an invalid method is invoked.
+
 class VERGEClient
   class InvalidMethodError < StandardError
     attr_accessor :message

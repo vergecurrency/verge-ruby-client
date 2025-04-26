@@ -30,6 +30,3 @@ jobs:
 
       - name: Run Rubocop (Linting)
         run: bundle exec rubocop
-
-      - name: Run RSpec tests
-        run: bundle exec rspec

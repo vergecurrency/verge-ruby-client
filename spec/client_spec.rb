@@ -25,30 +25,33 @@ describe VERGEClient::Client do
       expect(valid_client.valid?).to eql(true)
     end
   end
+end
 
-  describe 'error handling' do
-    it 'catches requests with bad credentials' do
-      expect { bad_client.get_info }.to raise_error(VERGEClient::HTTPError)
-    end
-
-    it 'catches requests with bad service urls' do
-      expect { bad_host_client.get_info }.to raise_error
-      expect { bad_port_client.get_info }.to raise_error
-    end
-
-    it 'throws rpc_error when the params are bad' do
-      expect { valid_client.get_account('bad_location') }.to raise_error(VERGEClient::RPCError)
-    end
-
-    it 'only allows listed methods' do
-      expect { valid_client.not_a_real_method }.to raise_error(VERGEClient::InvalidMethodError)
-    end
+describe 'Error Handling' do
+  it 'catches requests with bad credentials' do
+    expect { bad_client.get_info }.to raise_error(VERGEClient::HTTPError)
   end
 
-  describe 'method names' do
-    it 'works with ruby-style method names' do
-      expect { valid_client.get_info }.not_to raise_error
-      expect { valid_client.get_block_count }.not_to raise_error
-    end
+  it 'catches requests with bad service urls' do
+    expect { bad_host_client.get_info }.to raise_error
+  end
+
+  it 'catches requests with bad port' do
+    expect { bad_port_client.get_info }.to raise_error
+  end
+
+  it 'throws rpc_error when the params are bad' do
+    expect { valid_client.get_account('bad_location') }.to raise_error(VERGEClient::RPCError)
+  end
+
+  it 'only allows listed methods' do
+    expect { valid_client.not_a_real_method }.to raise_error(VERGEClient::InvalidMethodError)
+  end
+end
+
+describe 'Method Names' do
+  it 'works with ruby-style method names' do
+    expect { valid_client.get_info }.not_to raise_error
+    expect { valid_client.get_block_count }.not_to raise_error
   end
 end

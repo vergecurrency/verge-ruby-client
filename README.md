@@ -2,12 +2,12 @@
 ____   _________________________   ________ ___________
 \   \ /   /\_   _____/\______   \ /  _____/ \_   _____/
  \   Y   /  |    __)_  |       _//   \  ___  |    __)_ 
-  \     /   |        \ |    |   \\    \_\  \ |        \ 2020 VERGE
+  \     /   |        \ |    |   \\    \_\  \ |        \ 2025 VERGE
    \___/   /_______  / |____|_  / \______  //_______  /
                    \/         \/         \/         \/ 
 ```
 # Verge-Ruby
-Verge-Ruby is a gem that makes it easy to work with Verge in ruby. Tested using Ruby 2.5.1p57 on Ubuntu 18.04.
+Verge-Ruby is a gem that makes it easy to work with Verge in ruby.
 
 ## Dependencies
 

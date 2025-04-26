@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'net/http'
 require 'verge_client/client'
 require 'errors/http_error'
@@ -5,7 +7,6 @@ require 'errors/rpc_error'
 require 'errors/invalid_method_error'
 
 describe VERGEClient::Client do
-
   def valid_client
     # For local testing ensure you have verged running correctly and use your own username / password here
     VERGEClient::Client.new(user: 'vergerpcusername', password: 'rpcpassword')
@@ -48,5 +49,4 @@ describe VERGEClient::Client do
   it 'only allows listed methods' do
     expect { valid_client.not_a_real_method }.to raise_error(VERGEClient::InvalidMethodError)
   end
-
 end

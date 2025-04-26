@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'verge_client/client'
 
 describe VERGEClient do
-
   def valid_client
     # make sure to replace these with the credentials from your own verged
     VERGEClient.new(user: 'vergerpcusername', password: 'vergerpcpassword')
@@ -34,5 +35,4 @@ describe VERGEClient do
     my_balance = client.get_balance(new_wallet_addr)
     my_balance.should eql(0.0)
   end
-
 end

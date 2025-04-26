@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require 'verge_client/version'
 require 'verge_client/client'
 
 class VERGEClient
-
   def initialize(options = {})
     @client = VERGEClient::Client.new(options)
   end
@@ -13,7 +14,7 @@ class VERGEClient
   end
 
   def self.configuration
-    @configuration ||=  Configuration.new
+    @configuration ||= Configuration.new
   end
 
   def self.configure
@@ -25,12 +26,10 @@ class VERGEClient
 
     def initialize
       self.host = 'localhost'
-      self.port = 20102
+      self.port = 20_102
       self.protocol = :http
       self.user = 'rpcuser'
       self.password = 'rpcpassword'
     end
-
   end
-
 end

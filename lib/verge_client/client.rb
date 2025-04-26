@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'net/http'
 require 'uri'
 require 'json'
@@ -7,10 +9,8 @@ require 'errors/http_error'
 require 'errors/rpc_error'
 require 'errors/invalid_method_error'
 
-
 class VERGEClient
   class Client
-
     attr_accessor :options
 
     def initialize(options = {})
@@ -19,15 +19,15 @@ class VERGEClient
 
     def valid?
       post_body = { method: 'getinfo', id: Time.now.to_i }.to_json
-      http_post_request(post_body).class == Net::HTTPOK
-    rescue
+      http_post_request(post_body).instance_of?(Net::HTTPOK)
+    rescue StandardError
       false
     end
 
     def method_missing(name, *args)
-      raise VERGEClient::InvalidMethodError.new(name) unless VERGEClient::METHODS.include?(name.to_s)
+      raise VERGEClient::InvalidMethodError, name unless VERGEClient::METHODS.include?(name.to_s)
 
-      response = http_post_request( get_post_body(name, args) )
+      response = http_post_request(get_post_body(name, args))
       get_response_data(response)
     end
 
@@ -44,8 +44,9 @@ class VERGEClient
 
       response = http.request(request)
 
-      return response if response.class == Net::HTTPOK or response.class == Net::HTTPInternalServerError
-      raise VERGEClient::HTTPError.new(response)
+      return response if response.instance_of?(Net::HTTPOK) || response.instance_of?(Net::HTTPInternalServerError)
+
+      raise VERGEClient::HTTPError, response
     end
 
     private
@@ -55,21 +56,23 @@ class VERGEClient
     end
 
     def get_response_data(http_ok_response)
-      resp = JSON.parse( http_ok_response.body )
-      raise VERGEClient::RPCError.new(resp['error']['message']) if resp['error'] and http_ok_response.class == Net::HTTPInternalServerError
+      resp = JSON.parse(http_ok_response.body)
+      if resp['error'] && http_ok_response.instance_of?(Net::HTTPInternalServerError)
+        raise VERGEClient::RPCError,
+              resp['error']['message']
+      end
+
       resp['result']
     end
 
     def de_ruby_style(method_name)
-       method_name.to_s.tr('_', '').downcase.to_sym
+      method_name.to_s.tr('_', '').downcase.to_sym
     end
 
     def get_defaults
-      VERGEClient.configuration.instance_variables.each.inject({}) {|hash, var|
+      VERGEClient.configuration.instance_variables.each.with_object({}) do |var, hash|
         hash[var.to_s.delete('@').to_sym] = VERGEClient.configuration.instance_variable_get(var)
-        hash
-      }
+      end
     end
-
   end
 end

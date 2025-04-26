@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+spec.required_ruby_version = ">= 3.1"
 
 Gem::Specification.new do |spec|
   spec.name          = 'verge_client'

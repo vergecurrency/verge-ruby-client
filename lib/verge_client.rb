@@ -30,6 +30,7 @@ class VERGEClient
     yield(configuration) if block_given?
   end
   # Configuration for the VERGE Client.
+  
   class Configuration
     attr_accessor :host, :port, :protocol, :user, :password
 

@@ -44,8 +44,8 @@ class VERGEClient
 
     # Makes an HTTP POST request to the VERGE Daemon with the given body.
     def http_post_request(post_body)
-      url = URI.parse "#{@options[:protocol]}://#{@options[:user]}:#{@options[:password]}@"\
-                     "#{@options[:host]}:#{@options[:port]}/"
+      url = URI.parse "#{@options[:protocol]}://#{@options[:user]}:#{@options[:password]}@" \
+                      "#{@options[:host]}:#{@options[:port]}/"
 
       http = Net::HTTP.new(url.host, url.port)
       http.use_ssl = (url.scheme == 'https')
@@ -85,7 +85,7 @@ class VERGEClient
     end
 
     # Fetches the default configuration for the VERGEClient.
-    def get_defaults
+    def defaults
       VERGEClient.configuration.instance_variables.each.with_object({}) do |var, hash|
         hash[var.to_s.delete('@').to_sym] = VERGEClient.configuration.instance_variable_get(var)
       end

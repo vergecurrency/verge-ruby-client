@@ -11,6 +11,7 @@ require 'errors/invalid_method_error'
 
 # Handles low-level RPC HTTP communication with the VERGE server.
 class VERGEClient
+# Handles low-level RPC HTTP communication with the VERGE server.
   class Client
     attr_accessor :options
 
@@ -38,7 +39,8 @@ class VERGEClient
     end
 
     def http_post_request(post_body)
-      url = URI.parse "#{@options[:protocol]}://#{@options[:user]}:#{@options[:password]}@#{@options[:host]}:#{@options[:port]}/"
+    url = URI.parse "#{@options[:protocol]}://#{@options[:user]}:#{@options[:password]}@"\
+                   "#{@options[:host]}:#{@options[:port]}/"
 
       http = Net::HTTP.new(url.host, url.port)
       http.use_ssl = (url.scheme == 'https')

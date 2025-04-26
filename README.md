@@ -6,6 +6,8 @@ ____   _________________________   ________ ___________
    \___/   /_______  / |____|_  / \______  //_______  /
                    \/         \/         \/         \/ 
 ```
+![Test and Lint](https://github.com/vergecurrency/verge-ruby-client/actions/workflows/test_and_lint.yml/badge.svg)
+
 # Verge-Ruby
 Verge-Ruby is a gem that makes it easy to work with Verge in ruby.
 

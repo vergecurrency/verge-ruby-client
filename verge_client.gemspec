@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Gem::Specification.new do |spec|
-  spec.required_ruby_version = '>= 3.2'
+  spec.required_ruby_version = '>= 3.1'
 
   spec.name          = 'verge_client'
   spec.version       = File.read(File.expand_path('lib/verge_client/version.rb', __dir__))

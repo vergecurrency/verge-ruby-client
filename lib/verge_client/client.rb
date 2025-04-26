@@ -44,25 +44,41 @@ class VERGEClient
 
     # Makes an HTTP POST request to the VERGE Daemon with the given body.
     def http_post_request(post_body)
-      url = URI.parse "#{@options[:protocol]}://#{@options[:user]}:#{@options[:password]}@" \
-                      "#{@options[:host]}:#{@options[:port]}/"
-
-      http = Net::HTTP.new(url.host, url.port)
-      http.use_ssl = (url.scheme == 'https')
-
-      request = Net::HTTP::Post.new(url.path)
-      request.basic_auth url.user, url.password
-      request.content_type = 'application/json'
-      request.body = post_body
+      url = build_url
+      http = create_http_client(url)
+      request = create_post_request(url, post_body)
 
       response = http.request(request)
 
-      return response if response.instance_of?(Net::HTTPOK) || response.instance_of?(Net::HTTPInternalServerError)
+      return response if valid_response?(response)
 
       raise VERGEClient::HTTPError, response
     end
 
     private
+
+    def build_url
+      URI.parse "#{@options[:protocol]}://#{@options[:user]}:#{@options[:password]}@" \
+                "#{@options[:host]}:#{@options[:port]}/"
+    end
+
+    def create_http_client(url)
+      http = Net::HTTP.new(url.host, url.port)
+      http.use_ssl = (url.scheme == 'https')
+      http
+    end
+
+    def create_post_request(url, post_body)
+      request = Net::HTTP::Post.new(url.path)
+      request.basic_auth url.user, url.password
+      request.content_type = 'application/json'
+      request.body = post_body
+      request
+    end
+
+    def valid_response?(response)
+      response.instance_of?(Net::HTTPOK) || response.instance_of?(Net::HTTPInternalServerError)
+    end
 
     # Constructs the body for the RPC request based on the method name and arguments.
     def get_post_body(name, args)
@@ -85,7 +101,7 @@ class VERGEClient
     end
 
     # Fetches the default configuration for the VERGEClient.
-    def defaults
+    def get_defaults
       VERGEClient.configuration.instance_variables.each.with_object({}) do |var, hash|
         hash[var.to_s.delete('@').to_sym] = VERGEClient.configuration.instance_variable_get(var)
       end

@@ -33,6 +33,9 @@ describe VERGEClient::Client do
 
     it 'catches requests with bad service urls' do
       expect { bad_host_client.get_info }.to raise_error
+    end
+
+    it 'catches requests with bad port' do
       expect { bad_port_client.get_info }.to raise_error
     end
 

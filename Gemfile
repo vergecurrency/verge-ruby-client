@@ -5,6 +5,10 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in verge_client.gemspec
 gemspec
 
+# Development dependencies
 group :development, :test do
   gem 'rubocop', require: false
+  gem 'bundler', '>= 2.1'
+  gem 'rake', '~> 13.0'
+  gem 'rspec', '~> 3.12'
 end

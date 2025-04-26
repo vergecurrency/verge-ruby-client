@@ -10,8 +10,12 @@ class VERGEClient
   end
 
   # Delegate everything to the 'real' Client
-  def method_missing(name, *args)
-    @client.send(name, *args)
+  def method_missing(name, ...)
+    @client.send(name, ...)
+  end
+  
+  def respond_to_missing?(method_name, include_private = false)
+    @client.respond_to?(method_name) || super
   end
 
   def self.configuration

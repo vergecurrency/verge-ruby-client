@@ -31,6 +31,10 @@ class VERGEClient
       response = http_post_request(get_post_body(name, args))
       get_response_data(response)
     end
+	
+    def respond_to_missing?(method_name, include_private = false)
+      @client.respond_to?(method_name) || super
+    end
 
     def http_post_request(post_body)
       url = URI.parse "#{@options[:protocol]}://#{@options[:user]}:#{@options[:password]}@#{@options[:host]}:#{@options[:port]}/"

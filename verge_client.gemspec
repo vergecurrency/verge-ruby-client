@@ -1,9 +1,8 @@
 # frozen_string_literal: true
-require 'verge_client/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'verge_client'
-  spec.version       = VERGEClient::VERSION
+  spec.version       = File.read(File.expand_path('lib/verge_client/version.rb', __dir__)).match(/VERSION\s*=\s*['"]([^'"]+)['"]/)[1]
   spec.authors       = ['Verge Development']
   spec.email         = ['contact@vergecurrency.com']
   spec.summary       = 'Verge-Ruby is a gem that makes it easy to work with Verge in ruby.'

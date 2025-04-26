@@ -18,28 +18,32 @@ describe VERGEClient do
       expect(valid_client.valid?).to eql(true)
     end
   end
+end
 
-  describe 'client method calls' do
-    it 'calls client methods correctly' do
-      addr = valid_client.get_new_address
-      expect(addr[0]).to eql('D')
-    end
-
-    it 'using results as args' do
-      new_wallet_addr = valid_client.get_new_address
-      my_balance = valid_client.get_balance(new_wallet_addr)
-      expect(my_balance).to eql(0.0)
-    end
+describe VERGEClient, 'client method calls' do
+  let(:valid_client) do
+    VERGEClient.new(user: 'vergerpcusername', password: 'vergerpcpassword')
   end
 
-  describe 'client configuration' do
-    it 'configures itself properly' do
-      VERGEClient.configure do |config|
-        config.user = 'vergerpcusername'
-        config.password = 'vergerpcpassword'
-      end
-      client = VERGEClient.new
-      expect(client.valid?).to eql(true)
+  it 'calls client methods correctly' do
+    addr = valid_client.get_new_address
+    expect(addr[0]).to eql('D')
+  end
+
+  it 'using results as args' do
+    new_wallet_addr = valid_client.get_new_address
+    my_balance = valid_client.get_balance(new_wallet_addr)
+    expect(my_balance).to eql(0.0)
+  end
+end
+
+describe VERGEClient, 'client configuration' do
+  it 'configures itself properly' do
+    VERGEClient.configure do |config|
+      config.user = 'vergerpcusername'
+      config.password = 'vergerpcpassword'
     end
+    client = VERGEClient.new
+    expect(client.valid?).to eql(true)
   end
 end

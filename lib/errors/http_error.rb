@@ -5,6 +5,7 @@ class VERGEClient
     attr_accessor :object, :message
 
     def initialize(object)
+      super()
       @object = object
       @message = "Expected NET::HTTPOK but got: #{object.class}"
     end

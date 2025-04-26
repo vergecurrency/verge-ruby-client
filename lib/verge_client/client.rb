@@ -74,7 +74,7 @@ class VERGEClient
       method_name.to_s.tr('_', '').downcase.to_sym
     end
 
-    def get_defaults
+    def defaults
       VERGEClient.configuration.instance_variables.each.with_object({}) do |var, hash|
         hash[var.to_s.delete('@').to_sym] = VERGEClient.configuration.instance_variable_get(var)
       end

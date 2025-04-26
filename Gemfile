@@ -8,7 +8,7 @@ gemspec
 # Development dependencies
 group :development, :test do
   gem 'bundler', '>= 2.1'
-  gem 'rubocop', require: false
   gem 'rake', '~> 13.0'
+  gem 'rubocop', require: false
   gem 'rspec', '~> 3.12'
 end

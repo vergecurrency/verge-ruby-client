@@ -5,6 +5,7 @@ class VERGEClient
     attr_accessor :message
 
     def initialize(message)
+      super()
       @message = message
     end
   end

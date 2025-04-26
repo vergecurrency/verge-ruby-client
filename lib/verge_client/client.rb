@@ -14,6 +14,7 @@ class VERGEClient
     attr_accessor :options
 
     def initialize(options = {})
+      super()
       @options = get_defaults.merge(options)
     end
 

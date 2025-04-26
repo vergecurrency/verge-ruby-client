@@ -5,6 +5,7 @@ require 'verge_client/client'
 
 class VERGEClient
   def initialize(options = {})
+    super()
     @client = VERGEClient::Client.new(options)
   end
 

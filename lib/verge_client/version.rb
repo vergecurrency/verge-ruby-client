@@ -1,3 +1,3 @@
-class VERGEClient
-  VERSION = "0.5.0"
+module VERGEClient
+  VERSION = "0.1.0"
 end

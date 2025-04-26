@@ -14,7 +14,7 @@ class VERGEClient
   end
 
   # Delegate everything to the 'real' Client
-  
+
   def method_missing(name, ...)
     @client.send(name, ...)
   end

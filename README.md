@@ -2,7 +2,7 @@
 
 ![Test and Lint](https://github.com/vergecurrency/verge-ruby-client/actions/workflows/ruby.yml/badge.svg)
 
-# Verge-Ruby
+# Verge Ruby Client
 Verge-Ruby is a gem that makes it easy to work with Verge in ruby.
 
 ## Dependencies

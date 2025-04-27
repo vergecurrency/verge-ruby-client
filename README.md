@@ -1,11 +1,4 @@
-```
-____   _________________________   ________ ___________
-\   \ /   /\_   _____/\______   \ /  _____/ \_   _____/
- \   Y   /  |    __)_  |       _//   \  ___  |    __)_ 
-  \     /   |        \ |    |   \\    \_\  \ |        \ 2025 VERGE
-   \___/   /_______  / |____|_  / \______  //_______  /
-                   \/         \/         \/         \/ 
-```
+<p align="center"><img src="https://raw.githubusercontent.com/vergecurrency/verge-ruby-client/master/ruby.png" alt="Verge Ruby Client"></p>
 ![Test and Lint](https://github.com/vergecurrency/verge-ruby-client/actions/workflows/ruby.yml/badge.svg)
 
 # Verge-Ruby

@@ -3,11 +3,11 @@
 ![Test and Lint](https://github.com/vergecurrency/verge-ruby-client/actions/workflows/ruby.yml/badge.svg)
 
 # Verge Ruby Client
-Verge-Ruby is a gem that makes it easy to work with Verge in ruby.
+Verge-Ruby is a gem that makes it easy to interact with the Verge blockchain in ruby via the Verge Core daemon (verged).
 
 ## Dependencies
 
-The only requirement is a running Verge daemon ([verged](https://github.com/vergecurrency/verge)). Make sure to check out the [doc section](https://github.com/vergecurrency/verge/tree/master/doc) and follow the instructions for your os.
+The only requirement is a running Verge daemon ([verged](https://github.com/vergecurrency/verge)). Make sure to check out the [doc section](https://github.com/vergecurrency/verge/tree/master/doc) and follow the instructions for your os, or download the appropriate version for your platform from the releases tab.
 NOTICE: by default verged will only allow local connections.
 
 ## Installation

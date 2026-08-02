@@ -42,13 +42,20 @@ RSpec.describe VERGEClient::Client do
     expect(client.get_blockchain_info).to eq('chain' => 'regtest')
   end
 
-  it 'supports direct calls for daemon methods not yet in the convenience list' do
+  it 'supports direct calls for registered daemon methods' do
     allow(client).to receive(:http_post_request) do |body|
-      expect(JSON.parse(body)['method']).to eq('futuremethod')
+      expect(JSON.parse(body)['method']).to eq('getmemoryinfo')
       response(Net::HTTPOK, { 'result' => 'ok', 'error' => nil })
     end
 
-    expect(client.rpc_call('futuremethod')).to eq('ok')
+    expect(client.rpc_call('getmemoryinfo')).to eq('ok')
+  end
+
+  it 'rejects unregistered direct RPC calls locally' do
+    expect { client.rpc_call('futuremethod') }.to raise_error(
+      VERGEClient::InvalidMethodError,
+      'futuremethod is not a valid method.'
+    )
   end
 
   it 'raises an RPC error with the daemon code' do

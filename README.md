@@ -1,438 +1,159 @@
 <p align="center"><img src="https://raw.githubusercontent.com/vergecurrency/verge-ruby-client/master/ruby.png" alt="Verge Ruby Client"></p>
 
 ![Test and Lint](https://github.com/vergecurrency/verge-ruby-client/actions/workflows/ruby.yml/badge.svg)
+![Live verged regtest](https://github.com/vergecurrency/verge-ruby-client/actions/workflows/verged-regtest.yml/badge.svg)
 
 # Verge Ruby Client
-Verge-Ruby is a gem that makes it easy to interact with the Verge blockchain in ruby via the Verge Core daemon (verged).
 
-## Dependencies
+Verge Ruby Client is a gem for making JSON-RPC calls to Verge Core (`verged`)
+from Ruby.
 
-Ruby 3.2 or newer is required. Ruby 4.0.6 is the development and CI default.
+## Requirements
 
-The only runtime requirement is a running Verge daemon ([verged](https://github.com/vergecurrency/verge)). Make sure to check out the [doc section](https://github.com/vergecurrency/verge/tree/master/doc) and follow the instructions for your os, or download the appropriate version for your platform from the releases tab.
-NOTICE: by default verged will only allow local connections.
+- Ruby 3.2 or newer. Ruby 4.0.6 is the development and CI default.
+- A running [Verge Core daemon](https://github.com/vergecurrency/verge).
 
-## Testing
-
-Run the deterministic unit suite with:
-
-```sh
-bundle exec rake spec
-```
-
-The `Live verged regtest` GitHub Actions workflow downloads the official Verge
-Core v26.7 Linux release, verifies its SHA-256 checksum, starts `verged` on an
-isolated regtest chain, and runs `spec/live_regtest_spec.rb` against its JSON-RPC
-server. To run that spec locally, start a regtest daemon and set
-`LIVE_VERGED=1`; `VERGE_RPC_HOST`, `VERGE_RPC_PORT`, `VERGE_RPC_USER`, and
-`VERGE_RPC_PASSWORD` can override the test defaults.
+By default, `verged` only accepts local RPC connections.
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add the gem to your application:
 
-    gem 'verge_client'
+```ruby
+gem 'verge_client'
+```
 
-Or install it yourself as: (coming soon)
-
-    $ gem install verge_client (coming soon)
+Then run `bundle install`.
 
 ## Configuration
 
-If you're using rails you can create an initializer. Here are the default settings:
+Configure shared defaults:
 
 ```ruby
-# config/initializers/verge_client.rb
 VERGEClient.configure do |config|
-    config.host = 'localhost'
-    config.port = 20102
-    config.protocol = :http
-    config.user = ''
-    config.password = ''
+  config.host = '127.0.0.1'
+  config.port = 20_102
+  config.protocol = :http
+  config.user = 'rpcuser'
+  config.password = 'rpcpassword'
+  config.open_timeout = 5
+  config.read_timeout = 30
 end
 ```
 
-You can also pass config variables as an options hash when creating a new client:
+Options can also be passed to an individual client:
 
 ```ruby
-client = VERGEClient.new(user: 'my_verged_username', password: 'my_super_secure_password')
+client = VERGEClient.new(
+  host: '127.0.0.1',
+  port: 20_102,
+  user: 'rpcuser',
+  password: 'rpcpassword'
+)
 ```
 
-## Example Usage
+## Usage
+
+Registered daemon commands are available as Ruby-style method calls:
 
 ```ruby
-# create a new instance of the client
 client = VERGEClient.new
 
-# check that verged is running and that our credentials are correct
 if client.valid?
-    # get a new wallet address
-    new_wallet_addr = client.get_new_address
-
-    # get the balance of our new wallet
-    my_balance = client.get_balance(new_wallet_addr)
-    puts "I have #{my_balance} XVG!"
-else
-    puts 'Something is wrong...'
+  info = client.get_blockchain_info
+  address = client.get_new_address('receiving')
+  balance = client.get_balance
 end
 ```
 
-## Available Methods
+Underscores are removed when translating Ruby method names to daemon command
+names. For example, `get_blockchain_info` calls `getblockchaininfo`.
 
-<table>
-<tr>
-<th> Method </th>
-<th> Params </th>
-<th> Description </th>
-<th>unlckd wallet req?
-</th></tr>
-<tr>
-<td> add_multi_sig_address </td>
-<td> [nrequired] ["key","key"] [account] </td>
-<td> <b>Currently only available on testnet</b> Add a nrequired-to-sign multisignature address to the wallet. Each key is a VERGE address or hex-encoded public key. If [account] is specified, assign address to [account]. </td>
-<td> No
-</td></tr>
-<tr>
-<td> backup_wallet </td>
-<td> [destination] </td>
-<td> Safely copies wallet.dat to destination, which can be a directory or a path with filename. </td>
-<td> No
-</td></tr>
-<tr>
-<td> dump_priv_key </td>
-<td> [vergeaddress] </td>
-<td> Reveals the private key corresponding to <vergeaddress< </td>
-<td> Yes
-</td></tr>
-<tr>
-<td> encrypt_wallet </td>
-<td> [passphrase] </td>
-<td> Encrypts the wallet with <passphrase<. </td>
-<td> No
-</td></tr>
-<tr>
-<td> get_account </td>
-<td> [vergeaddress] </td>
-<td> Returns the account associated with the given address. </td>
-<td> No
-</td></tr>
-<tr>
-<td> get_account_address </td>
-<td> [account] </td>
-<td> Returns the current Verge address for receiving payments to this account. </td>
-<td> No
-</td></tr>
-<tr>
-<td> get_addresses_by_account </td>
-<td> [account] </td>
-<td> Returns the list of addresses for the given account. </td>
-<td> No
-</td></tr>
-<tr>
-<td> get_balance </td>
-<td> [account] [minconf=1] </td>
-<td> If [account] is not specified, returns the server's total available balance.<br />If [account] is specified, returns the balance in the account. </td>
-<td> No
-</td></tr>
-<tr>
-<td> get_block </td>
-<td> [hash] </td>
-<td> Returns information about the given block hash. </td>
-<td> No
-</td></tr>
-<tr>
-<td> get_block_count </td>
-<td> </td>
-<td> Returns the number of blocks in the longest block chain. </td>
-<td> No
-</td></tr>
-<tr>
-<td> get_block_hash </td>
-<td> [index] </td>
-<td> Returns hash of block in best-block-chain at <index< </td>
-<td> No
-</td></tr>
-<tr>
-<td> get_block_number </td>
-<td> </td>
-<td> <b>Deprecated</b>. Use getblockcount. </td>
-<td> No
-</td></tr>
-<tr>
-<td> get_connection_count </td>
-<td> </td>
-<td> Returns the number of connections to other nodes. </td>
-<td> No
-</td></tr>
-<tr>
-<td> get_difficulty </td>
-<td> </td>
-<td> Returns the proof-of-work difficulty as a multiple of the minimum difficulty. </td>
-<td> No
-</td></tr>
-<tr>
-<td> get_generate </td>
-<td> </td>
-<td> Returns true or false whether verged is currently generating hashes </td>
-<td> No
-</td></tr>
-<tr>
-<td> get_hashes_per_sec </td>
-<td> </td>
-<td> Returns a recent hashes per second performance measurement while generating. </td>
-<td> No
-</td></tr>
-<tr>
-<td> get_info </td>
-<td> </td>
-<td> Returns an object containing various state info. </td>
-<td> No
-</td></tr>
-<tr>
-<td> get_memory_pool </td>
-<td> [data] </td>
-<td> If [data] is not specified, returns data needed to construct a block to work on:
-<ul><li> "version": block version
-</li><li> "previousblockhash": hash of current highest block
-</li><li> "transactions": contents of non-coinbase transactions that should be included in the next block
-</li><li> "coinbasevalue": maximum allowable input to coinbase transaction, including the generation award and transaction fees
-</li><li> "time": timestamp appropriate for next block
-</li><li> "bits": compressed target of next block
-</li></ul>
-<p>If [data] is specified, tries to solve the block and returns true if it was successful.
-</p>
-</td>
-<td> No
-</td></tr>
-<tr>
-<td> get_mining_info </td>
-<td> </td>
-<td> Returns an object containing mining-related information:
-<ul><li> blocks
-</li><li> currentblocksize
-</li><li> currentblocktx
-</li><li> difficulty
-</li><li> errors
-</li><li> generate
-</li><li> genproclimit
-</li><li> hashespersec
-</li><li> pooledtx
-</li><li> testnet
-</li></ul>
-</td>
-<td> No
-</td></tr>
-<tr>
-<td> get_new_address </td>
-<td> [account] </td>
-<td> Returns a new VERGE address for receiving payments.  If [account] is specified (recommended), it is added to the address book so payments received with the address will be credited to [account]. </td>
-<td> No
-</td></tr>
-<tr>
-<td> get_received_by_account </td>
-<td> [account] [minconf=1] </td>
-<td> Returns the total amount received by addresses with [account] in transactions with at least [minconf] confirmations. If [account] not provided return will include all transactions to all accounts. (version 0.3.24-beta) </td>
-<td> No
-</td></tr>
-<tr>
-<td> get_received_by_address </td>
-<td> [vergeaddress] [minconf=1] </td>
-<td> Returns the total amount received by <vergeaddress< in transactions with at least [minconf] confirmations. While some might consider this obvious, value reported by this only considers *receiving* transactions. It does not check payments that have been made *from* this address. In other words, this is not "getaddressbalance". Works only for addresses in the local wallet, external addresses will always show 0. </td>
-<td> No
-</td></tr>
-<tr>
-<td> get_transaction </td>
-<td> [txid] </td>
-<td> Returns an object about the given transaction containing:
-<ul><li> "amount": total amount of the transaction
-</li><li> "confirmations":  number of confirmations of the transaction
-</li><li> "txid": the transaction ID
-</li><li> "time": time the transaction occurred
-</li><li> "details" - An array of objects containing:
-<ul><li> "account"
-</li><li> "address"
-</li><li> "category"
-</li><li> "amount"
-</li></ul>
-</li></ul>
-</td>
-<td> No
-</td></tr>
-<tr>
-<td> get_work </td>
-<td> [data] </td>
-<td> If [data] is not specified, returns formatted hash data to work on:
-<ul><li> "midstate": precomputed hash state after hashing the first half of the data
-</li><li> "data": block data
-</li><li> "hash1": formatted hash buffer for second hash
-</li><li> "target": little endian hash target
-</li></ul>
-<p>If [data] is specified, tries to solve the block and returns true if it was successful.
-</p>
-</td>
-<td> No
-</td></tr>
-<tr>
-<td> help </td>
-<td> [command] </td>
-<td> List commands, or get help for a command. </td>
-<td> No
-</td></tr>
-<tr>
-<td> import_priv_key </td>
-<td> [vergeprivkey] [label] </td>
-<td> Adds a private key (as returned by dumpprivkey) to your wallet. </td>
-<td> Yes
-</td></tr>
-<tr>
-<td> key_pool_refill </td>
-<td> </td>
-<td> Fills the keypool, requires wallet passphrase to be set. </td>
-<td> Yes
-</td></tr>
-<tr>
-<td> list_accounts </td>
-<td> [minconf=1] </td>
-<td> Returns Object that has account names as keys, account balances as values. </td>
-<td> No
-</td></tr>
-<tr>
-<td> list_received_by_account </td>
-<td> [minconf=1] [includeempty=false] </td>
-<td> Returns an array of objects containing:
-<ul><li> "account": the account of the receiving addresses
-</li><li> "amount": total amount received by addresses with this account
-</li><li> "confirmations": number of confirmations of the most recent transaction included
-</li></ul>
-</td>
-<td> No
-</td></tr>
-<tr>
-<td> list_received_by_address </td>
-<td> [minconf=1] [includeempty=false] </td>
-<td> Returns an array of objects containing:
-<ul><li> "address": receiving address
-</li><li> "account": the account of the receiving address
-</li><li> "amount": total amount received by the address
-</li><li> "confirmations": number of confirmations of the most recent transaction included
-</li></ul>
-<p>To get a list of accounts on the system, execute verged listreceivedbyaddress 0 true
-</p>
-</td>
-<td> No
-</td></tr>
-<tr>
-<td> list_since_block</td>
-<td> [blockhash] [target-confirmations] </td>
-<td> Get all transactions in blocks since block [blockhash], or all transactions if omitted. </td>
-<td> No
-</td></tr>
-<tr>
-<td> list_transactions </td>
-<td> [account] [count=10] [from=0] </td>
-<td> Returns up to [count] most recent transactions skipping the first [from] transactions for account [account]. If [account] not provided will return recent transaction from all accounts.
-</td>
-<td> No
-</td></tr>
-<tr>
-<td> move </td>
-<td> [fromaccount] [toaccount] [amount] [minconf=1] [comment] </td>
-<td> Move from one account in your wallet to another </td>
-<td> No
-</td></tr>
-<tr>
-<td> send_from </td>
-<td> [fromaccount] [tovergeaddress] [amount] [minconf=1] [comment] [comment-to] </td>
-<td> <amount< is a real and is rounded to 8 decimal places. Will send the given amount to the given address, ensuring the account has a valid balance using [minconf] confirmations. Returns the transaction ID if successful (not in JSON object). </td>
-<td> Yes
-</td></tr>
-<tr>
-<td> send_many </td>
-<td> [fromaccount] [address:amount,...] [minconf=1] [comment] </td>
-<td> amounts are double-precision floating point numbers </td>
-<td> Yes
-</td></tr>
-<tr>
-<td> send_to_address </td>
-<td> [vergeaddress] [amount] [comment] [comment-to] </td>
-<td> <amount< is a real and is rounded to 8 decimal places. Returns the transaction ID <txid< if successful. </td>
-<td> Yes
-</td></tr>
-<tr>
-<td> set_account </td>
-<td> [vergeaddress] [account] </td>
-<td> Sets the account associated with the given address. Assigning address that is already assigned to the same account will create a new address associated with that account. </td>
-<td> No
-</td></tr>
-<tr>
-<td> set_generate </td>
-<td> [generate] [genproclimit] </td>
-<td> [generate] is true or false to turn generation on or off.
+Commands can also be called explicitly:
 
-Generation is limited to [genproclimit] processors, -1 is unlimited. </td>
-<td> No
-</td></tr>
-<tr>
-<td> sign_message </td>
-<td> [vergeaddress] [message] </td>
-<td> Sign a message with the private key of an address. </td>
-<td> Yes
-</td></tr>
-<tr>
-<td> set_tx_fee </td>
-<td> [amount] </td>
-<td> [amount] is a real and is rounded to the nearest 0.00000001 </td>
-<td> No
-</td></tr>
-<tr>
-<td> stop </td>
-<td> </td>
-<td> Stop verge server. </td>
-<td> No
-</td></tr>
-<tr>
-<td> validate_address </td>
-<td> [vergeaddress] </td>
-<td> Return information about [vergeaddress]. </td>
-<td> No
-</td></tr>
-<tr>
-<td> verify_message </td>
-<td> [vergeaddress] [signature] [message] </td>
-<td> Verify a signed message. </td>
-<td> No
-</td></tr>
-<tr>
-<td> wallet_lock </td>
-<td>  </td>
-<td> Removes the wallet encryption key from memory, locking the wallet. After calling this method,  you will need to call walletpassphrase again before being able to call any methods which require the wallet to be unlocked. </td>
-<td> No
-</td></tr>
-<tr>
-<td> wallet_passphrase </td>
-<td> [passphrase] [timeout] </td>
-<td> Stores the wallet decryption key in memory for <timeout< seconds. </td>
-<td> No
-</td></tr>
-<tr>
-<td> wallet_passphrase_change </td>
-<td> [oldpassphrase] [newpassphrase] </td>
-<td> Changes the wallet passphrase from <oldpassphrase< to <newpassphrase<. </td>
-<td> No
-</td></tr></table>
+```ruby
+client.rpc_call('getblockchaininfo')
+client.rpc_call(:get_blockchain_info)
+```
 
-*Table stolen from [node-verge](https://github.com/vergecurrency/nodejs-verge)
+Both forms enforce the same allowlist. Unknown or unregistered commands raise
+`VERGEClient::InvalidMethodError`.
+
+## Supported RPC Commands
+
+The client allowlist is maintained in
+[`lib/verge_client/methods.rb`](lib/verge_client/methods.rb). It contains all
+154 commands not marked deprecated in the current
+[`vergecurrency/verge` RPC reference](https://github.com/vergecurrency/verge/blob/master/RPC.md).
+Commands absent from that allowlist, including every deprecated command, raise
+`VERGEClient::InvalidMethodError`.
+
+Every command below inherits the status shown in its section.
+
+### Active
+
+| Category | Commands |
+| --- | --- |
+| Control | `help`, `stop`, `uptime`, `getmemoryinfo`, `logging` |
+| Blockchain | `getblockchaininfo`, `getchaintxstats`, `getblockstats`, `getbestblockhash`, `getblockcount`, `getblock`, `getblockhash`, `getblockheader`, `getchaintips`, `getdifficulty`, `getmempoolancestors`, `getmempooldescendants`, `getmempoolentry`, `getmempoolinfo`, `getrawmempool`, `gettxout`, `gettxoutsetinfo`, `pruneblockchain`, `savemempool`, `verifychain`, `preciousblock`, `gettxoutproof`, `verifytxoutproof` |
+| Network | `getconnectioncount`, `ping`, `getpeerinfo`, `addnode`, `disconnectnode`, `getaddednodeinfo`, `getnettotals`, `getnetworkinfo`, `setban`, `listbanned`, `clearbanned`, `setnetworkactive`, `getnodeaddresses` |
+| Mining and fees | `getnetworkhashps`, `getallnetworkhashps`, `getmininginfo`, `prioritisetransaction`, `getblocktemplate`, `decodeblock`, `reserializeblock`, `estimatesmartfee` |
+| Raw transactions | `getrawtransaction`, `createrawtransaction`, `decoderawtransaction`, `decodescript`, `sendrawtransaction`, `combinerawtransaction`, `signrawtransaction`, `signrawtransactionwithkey`, `signrawtransactionwithwallet`, `testmempoolaccept`, `fundrawtransaction` |
+| Utility | `validateaddress`, `createmultisig`, `verifymessage`, `signmessagewithprivkey`, `setalgo`, `debuginfo`, `getinfo` |
+| Wallet | `abandontransaction`, `abortrescan`, `addmultisigaddress`, `backupwallet`, `bumpfee`, `createwallet`, `dumpprivkey`, `dumpwallet`, `encryptwallet`, `exportstealthaddress`, `getaddressinfo`, `getbalance`, `getnewaddress`, `getnewstealthaddress`, `getrawchangeaddress`, `getreceivedbyaddress`, `gettransaction`, `getunconfirmedbalance`, `getwalletinfo`, `importmulti`, `importprivkey`, `importwallet`, `importaddress`, `importprunedfunds`, `importpubkey`, `importstealthaddress`, `keypoolrefill`, `listaddressgroupings`, `listlockunspent`, `listreceivedbyaddress`, `listsinceblock`, `liststealthaddresses`, `listtransactions`, `listunspent`, `listwallets`, `loadwallet`, `lockunspent`, `sendmany`, `sendtoaddress`, `sendtostealthaddress`, `settxfee`, `signmessage`, `walletlock`, `walletpassphrasechange`, `walletpassphrase`, `removeprunedfunds`, `rescanblockchain`, `sethdseed`, `submitblock`, `generatetoaddress`, `generate` |
+| Wallet labels | `getaddressesbylabel`, `getreceivedbylabel`, `listlabels`, `listreceivedbylabel`, `setlabel` |
+| Secure messaging | `smsgenable`, `smsgdisable`, `smsgoptions`, `smsglocalkeys`, `smsgscanchain`, `smsgscanbuckets`, `smsginfo`, `flushsmgsdb`, `smsgaddaddress`, `smsgaddlocaladdress`, `smsgimportprivkey`, `smsggetpubkey`, `smsgsend`, `smsginbox`, `smsgoutbox`, `smsgbuckets`, `smsgview`, `smsg`, `smsgpurge` |
+
+### Hidden or compatibility
+
+These commands remain callable because upstream does not mark them deprecated,
+but they are primarily intended for testing or advanced operator workflows:
+
+`invalidateblock`, `reconsiderblock`, `waitfornewblock`, `waitforblock`,
+`waitforblockheight`, `syncwithvalidationinterfacequeue`, `estimatefee`,
+`estimaterawfee`, `setmocktime`, `echo`, `echojson`,
+`resendwallettransactions`.
+
+### Deprecated — not callable by this client
+
+`sendfrom`, `smsgsendanon`, `addwitnessaddress`, `getaccountaddress`,
+`getaccount`, `getaddressesbyaccount`, `getreceivedbyaccount`, `listaccounts`,
+`listreceivedbyaccount`, `setaccount`, `move`.
+
+Use `verge-cli help <command>` for the result schema exposed by a particular
+daemon build.
+
+## Testing
+
+Run the unit test and lint suites with:
+
+```sh
+bundle exec rake spec
+bundle exec rubocop
+```
+
+The `Live verged regtest` GitHub Actions workflow downloads the official Verge
+Core v26.7 Linux release, verifies its SHA-256 checksum, starts `verged` on a
+fresh regtest chain, and runs `spec/live_regtest_spec.rb` against its live
+JSON-RPC server. Its workflow summary displays the RPC responses returned
+through this Ruby client. It also calls `help <command>` through the Ruby client
+for every one of the 154 supported commands and publishes the daemon's first
+response line for each. This verifies registration without executing dangerous
+or state-changing commands merely for coverage.
+
+To run the live spec locally, start a regtest daemon and set `LIVE_VERGED=1`.
+The `VERGE_RPC_HOST`, `VERGE_RPC_PORT`, `VERGE_RPC_USER`, and
+`VERGE_RPC_PASSWORD` environment variables override its defaults.
 
 ## Contributing
 
-For local testing, make sure to replace the user/password in `spec/client_spec.rb` and `spec/verge_client_spec.rb` with the credentials for your local verged.
+1. Fork the repository.
+2. Create a feature branch.
+3. Add or update tests.
+4. Run the test and lint suites.
+5. Open a pull request.
 
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+## Why a Verge-specific client?
 
-## Can't I just use a client for bitcoin or litecoin?
-
-Perhaps, but this way you don't need to worry about any current or future api inconsistencies.
+A Verge-specific allowlist follows Verge Core's registered RPC surface without
+assuming that Bitcoin or Litecoin RPC compatibility is exact.

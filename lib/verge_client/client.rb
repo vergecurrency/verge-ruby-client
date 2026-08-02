@@ -31,7 +31,10 @@ class VERGEClient
 
     # Calls an RPC method by its daemon name.
     def rpc_call(method, *params)
-      response = http_post_request(get_post_body(method, params))
+      rpc_method = normalize_method_name(method)
+      raise VERGEClient::InvalidMethodError, method unless VERGEClient::RPC_METHODS.include?(rpc_method)
+
+      response = http_post_request(get_post_body(rpc_method, params))
       get_response_data(response)
     end
 
@@ -39,13 +42,11 @@ class VERGEClient
     def method_missing(name, *, &block)
       return super if block
 
-      raise VERGEClient::InvalidMethodError, name unless VERGEClient::METHODS.include?(name.to_s)
-
       rpc_call(name, *)
     end
 
     def respond_to_missing?(method_name, include_private = false)
-      VERGEClient::METHODS.include?(method_name.to_s) || super
+      VERGEClient::RPC_METHODS.include?(normalize_method_name(method_name)) || super
     end
 
     # Makes an HTTP POST request to the VERGE Daemon with the given body.
@@ -94,7 +95,7 @@ class VERGEClient
 
     # Constructs the body for the RPC request based on the method name and arguments.
     def get_post_body(name, args)
-      { jsonrpc: '1.0', method: de_ruby_style(name), params: args, id: object_id }.to_json
+      { jsonrpc: '1.0', method: name, params: args, id: object_id }.to_json
     end
 
     # Parses the response from the HTTP request and returns the result.
@@ -108,7 +109,7 @@ class VERGEClient
     end
 
     # Converts a Ruby-style name (get_block_count) to a daemon name (getblockcount).
-    def de_ruby_style(method_name)
+    def normalize_method_name(method_name)
       method_name.to_s.delete('_').downcase
     end
 

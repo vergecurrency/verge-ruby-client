@@ -53,4 +53,19 @@ RSpec.describe 'Verge Core live regtest', :live do
     expect(address).not_to be_empty
     expect(balance).to be_a(Numeric)
   end
+
+  it 'confirms every supported RPC is registered by the live daemon' do
+    registrations = VERGEClient::RPC_METHODS.to_h do |method|
+      help_response = client.help(method)
+      [method, help_response.lines.first.to_s.strip]
+    end
+
+    report_rpc('help <each supported command>', registrations)
+
+    expect(registrations.length).to eq(154)
+    unknown_commands = registrations.select do |_method, response|
+      response.start_with?('help: unknown command:')
+    end
+    expect(unknown_commands).to be_empty
+  end
 end

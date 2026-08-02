@@ -112,7 +112,7 @@ jobs:
             echo "- Network: \`regtest\`"
             echo "- RPC endpoint: \`$VERGE_RPC_HOST:$VERGE_RPC_PORT\`"
             echo
-            echo "### Ruby client RPC tests"
+            echo "### Ruby client RPC calls and responses"
             echo '```text'
             if test -f live-rpc-results.txt; then
               cat live-rpc-results.txt
@@ -121,7 +121,7 @@ jobs:
             fi
             echo '```'
             echo
-            echo "### Live verged response"
+            echo "### Direct verged readiness response"
             echo '```json'
             if test -s live-daemon-rpc.json; then
               python3 -m json.tool live-daemon-rpc.json || cat live-daemon-rpc.json

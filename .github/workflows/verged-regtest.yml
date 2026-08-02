@@ -22,6 +22,7 @@ env:
 
 jobs:
   regtest:
+    name: Verge daemon live RPC test
     runs-on: ubuntu-24.04
     timeout-minutes: 15
 
@@ -83,9 +84,56 @@ jobs:
           exit 1
 
       - name: Test client against live verged
+        id: live_tests
+        continue-on-error: true
         env:
           LIVE_VERGED: '1'
-        run: bundle exec rspec spec/live_regtest_spec.rb
+        run: bundle exec rspec spec/live_regtest_spec.rb 2>&1 | tee live-rpc-results.txt
+
+      - name: Capture live daemon RPC status
+        if: always()
+        continue-on-error: true
+        run: |
+          curl --silent --show-error \
+            --user "$VERGE_RPC_USER:$VERGE_RPC_PASSWORD" \
+            --header 'content-type: application/json' \
+            --data '{"jsonrpc":"1.0","id":"summary","method":"getblockchaininfo","params":[]}' \
+            "http://$VERGE_RPC_HOST:$VERGE_RPC_PORT/" \
+            > live-daemon-rpc.json
+
+      - name: Publish live RPC test summary
+        if: always()
+        run: |
+          {
+            echo "## Verge Core $VERGE_VERSION live regtest"
+            echo
+            echo "- Ruby: \`$(ruby --version)\`"
+            echo "- Daemon artifact: \`$VERGE_ARCHIVE\`"
+            echo "- Network: \`regtest\`"
+            echo "- RPC endpoint: \`$VERGE_RPC_HOST:$VERGE_RPC_PORT\`"
+            echo
+            echo "### Ruby client RPC tests"
+            echo '```text'
+            if test -f live-rpc-results.txt; then
+              cat live-rpc-results.txt
+            else
+              echo "Live RPC tests did not produce results."
+            fi
+            echo '```'
+            echo
+            echo "### Live verged response"
+            echo '```json'
+            if test -s live-daemon-rpc.json; then
+              python3 -m json.tool live-daemon-rpc.json || cat live-daemon-rpc.json
+            else
+              echo '{"error":"verged did not return an RPC status"}'
+            fi
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fail when live RPC tests failed
+        if: steps.live_tests.outcome == 'failure'
+        run: exit 1
 
       - name: Show daemon log on failure
         if: failure()

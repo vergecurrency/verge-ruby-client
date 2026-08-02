@@ -36,7 +36,7 @@ RSpec.describe VERGEClient::Client do
     allow(client).to receive(:http_post_request) do |body|
       request = JSON.parse(body)
       expect(request).to include('method' => 'getblockchaininfo', 'params' => [])
-      response(Net::HTTPOK, 'result' => { 'chain' => 'regtest' }, 'error' => nil)
+      response(Net::HTTPOK, { 'result' => { 'chain' => 'regtest' }, 'error' => nil })
     end
 
     expect(client.get_blockchain_info).to eq('chain' => 'regtest')
@@ -45,7 +45,7 @@ RSpec.describe VERGEClient::Client do
   it 'supports direct calls for daemon methods not yet in the convenience list' do
     allow(client).to receive(:http_post_request) do |body|
       expect(JSON.parse(body)['method']).to eq('futuremethod')
-      response(Net::HTTPOK, 'result' => 'ok', 'error' => nil)
+      response(Net::HTTPOK, { 'result' => 'ok', 'error' => nil })
     end
 
     expect(client.rpc_call('futuremethod')).to eq('ok')
@@ -54,8 +54,10 @@ RSpec.describe VERGEClient::Client do
   it 'raises an RPC error with the daemon code' do
     rpc_response = response(
       Net::HTTPInternalServerError,
-      'result' => nil,
-      'error' => { 'code' => -8, 'message' => 'Invalid parameter' }
+      {
+        'result' => nil,
+        'error' => { 'code' => -8, 'message' => 'Invalid parameter' }
+      }
     )
     allow(client).to receive(:http_post_request).and_return(rpc_response)
 

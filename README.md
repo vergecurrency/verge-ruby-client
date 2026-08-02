@@ -7,8 +7,7 @@ Verge-Ruby is a gem that makes it easy to interact with the Verge blockchain in 
 
 ## Dependencies
 
-Ruby 3.2 or newer is required. Ruby 4.0.6 is the development default, and CI
-checks Ruby 3.2, 3.3, 3.4, and 4.0 compatibility.
+Ruby 3.2 or newer is required. Ruby 4.0.6 is the development and CI default.
 
 The only runtime requirement is a running Verge daemon ([verged](https://github.com/vergecurrency/verge)). Make sure to check out the [doc section](https://github.com/vergecurrency/verge/tree/master/doc) and follow the instructions for your os, or download the appropriate version for your platform from the releases tab.
 NOTICE: by default verged will only allow local connections.

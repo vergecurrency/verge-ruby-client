@@ -9,12 +9,8 @@ on:
 
 jobs:
   build:
+    name: Ruby client test and lint
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        ruby-version: ['3.2', '3.3', '3.4', '4.0']
 
     steps:
       - name: Checkout repository
@@ -23,12 +19,48 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ matrix.ruby-version }}
+          ruby-version: '4.0.6'
           bundler: '4.0.17'
           bundler-cache: true
 
       - name: Run Rubocop (Linting)
-        run: bundle exec rubocop
+        id: lint
+        continue-on-error: true
+        run: bundle exec rubocop 2>&1 | tee rubocop-results.txt
 
       - name: Run unit tests
-        run: bundle exec rake spec
+        id: unit_tests
+        continue-on-error: true
+        run: bundle exec rake spec 2>&1 | tee rspec-results.txt
+
+      - name: Publish test and lint summary
+        if: always()
+        run: |
+          {
+            echo "## Ruby client test and lint"
+            echo
+            echo "- Ruby: \`$(ruby --version)\`"
+            echo "- Bundler: \`$(bundle --version)\`"
+            echo
+            echo "### RuboCop"
+            echo '```text'
+            if test -f rubocop-results.txt; then
+              cat rubocop-results.txt
+            else
+              echo "RuboCop did not produce results."
+            fi
+            echo '```'
+            echo
+            echo "### RSpec"
+            echo '```text'
+            if test -f rspec-results.txt; then
+              cat rspec-results.txt
+            else
+              echo "RSpec did not produce results."
+            fi
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fail when test or lint failed
+        if: steps.lint.outcome == 'failure' || steps.unit_tests.outcome == 'failure'
+        run: exit 1

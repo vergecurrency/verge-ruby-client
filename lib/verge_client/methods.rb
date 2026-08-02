@@ -152,7 +152,6 @@ class VERGEClient
     waitforblock
     waitforblockheight
     syncwithvalidationinterfacequeue
-    estimatefee
     estimaterawfee
     setmocktime
     echo

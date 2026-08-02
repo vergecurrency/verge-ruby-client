@@ -62,7 +62,7 @@ RSpec.describe 'Verge Core live regtest', :live do
 
     report_rpc('help <each supported command>', registrations)
 
-    expect(registrations.length).to eq(154)
+    expect(registrations.length).to eq(153)
     unknown_commands = registrations.select do |_method, response|
       response.start_with?('help: unknown command:')
     end

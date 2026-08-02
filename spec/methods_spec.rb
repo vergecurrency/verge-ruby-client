@@ -5,8 +5,8 @@ require 'verge_client/methods'
 RSpec.describe 'VERGEClient RPC methods' do
   subject(:methods) { VERGEClient::RPC_METHODS }
 
-  it 'contains the complete unique non-deprecated RPC.md command set' do
-    expect(methods.length).to eq(154)
+  it 'contains the complete unique supported command set' do
+    expect(methods.length).to eq(153)
     expect(methods.uniq).to eq(methods)
   end
 
@@ -31,7 +31,8 @@ RSpec.describe 'VERGEClient RPC methods' do
       'listaccounts',
       'listreceivedbyaccount',
       'setaccount',
-      'move'
+      'move',
+      'estimatefee'
     )
   end
 end

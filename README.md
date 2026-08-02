@@ -82,8 +82,8 @@ Both forms enforce the same allowlist. Unknown or unregistered commands raise
 ## Supported RPC Commands
 
 The client allowlist is maintained in
-[`lib/verge_client/methods.rb`](lib/verge_client/methods.rb). It contains all
-154 commands not marked deprecated in the current
+[`lib/verge_client/methods.rb`](lib/verge_client/methods.rb). It contains 153
+supported commands from the current
 [`vergecurrency/verge` RPC reference](https://github.com/vergecurrency/verge/blob/master/RPC.md).
 Commands absent from that allowlist, including every deprecated command, raise
 `VERGEClient::InvalidMethodError`.
@@ -110,8 +110,8 @@ These commands remain callable because upstream does not mark them deprecated,
 but they are primarily intended for testing or advanced operator workflows:
 
 `invalidateblock`, `reconsiderblock`, `waitfornewblock`, `waitforblock`,
-`waitforblockheight`, `syncwithvalidationinterfacequeue`, `estimatefee`,
-`estimaterawfee`, `setmocktime`, `echo`, `echojson`,
+`waitforblockheight`, `syncwithvalidationinterfacequeue`, `estimaterawfee`,
+`setmocktime`, `echo`, `echojson`,
 `resendwallettransactions`.
 
 ### Deprecated — not callable by this client
@@ -119,6 +119,10 @@ but they are primarily intended for testing or advanced operator workflows:
 `sendfrom`, `smsgsendanon`, `addwitnessaddress`, `getaccountaddress`,
 `getaccount`, `getaddressesbyaccount`, `getreceivedbyaccount`, `listaccounts`,
 `listreceivedbyaccount`, `setaccount`, `move`.
+
+`estimatefee` is also not callable. Although currently listed upstream as a
+compatibility command, Verge Core v26.7 reports that it was removed and directs
+clients to `estimatesmartfee`.
 
 Use `verge-cli help <command>` for the result schema exposed by a particular
 daemon build.
@@ -137,7 +141,7 @@ Core v26.7 Linux release, verifies its SHA-256 checksum, starts `verged` on a
 fresh regtest chain, and runs `spec/live_regtest_spec.rb` against its live
 JSON-RPC server. Its workflow summary displays the RPC responses returned
 through this Ruby client. It also calls `help <command>` through the Ruby client
-for every one of the 154 supported commands and publishes the daemon's first
+for every one of the 153 supported commands and publishes the daemon's first
 response line for each. This verifies registration without executing dangerous
 or state-changing commands merely for coverage.
 

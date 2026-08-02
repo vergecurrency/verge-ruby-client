@@ -36,12 +36,12 @@ class VERGEClient
     end
 
     # Handles supported Ruby-style RPC method calls.
-    def method_missing(name, *args, &block)
+    def method_missing(name, *, &block)
       return super if block
 
       raise VERGEClient::InvalidMethodError, name unless VERGEClient::METHODS.include?(name.to_s)
 
-      rpc_call(name, *args)
+      rpc_call(name, *)
     end
 
     def respond_to_missing?(method_name, include_private = false)

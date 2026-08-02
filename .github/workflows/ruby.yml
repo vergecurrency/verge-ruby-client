@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
         ruby-version: ['3.2', '3.3', '3.4', '4.0']
 
@@ -25,9 +26,6 @@ jobs:
           ruby-version: ${{ matrix.ruby-version }}
           bundler: '4.0.17'
           bundler-cache: true
-
-      - name: Install dependencies
-        run: bundle install
 
       - name: Run Rubocop (Linting)
         run: bundle exec rubocop

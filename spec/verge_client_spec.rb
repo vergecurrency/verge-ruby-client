@@ -1,49 +1,29 @@
 # frozen_string_literal: true
 
-require 'verge_client/client'
+require 'verge_client'
 
-describe VERGEClient do
-  let(:valid_client) do
-    # make sure to replace these with the credentials from your own verged
-    VERGEClient.new(user: 'vergerpcusername', password: 'vergerpcpassword')
+RSpec.describe VERGEClient do
+  subject(:client) { described_class.new(user: 'alice', password: 'secret') }
+
+  it 'delegates supported RPC methods to the transport client' do
+    transport = client.instance_variable_get(:@client)
+    allow(transport).to receive(:get_block_count).and_return(42)
+
+    expect(client.get_block_count).to eq(42)
   end
 
-  describe '#valid?' do
-    it 'rejects invalid client' do
-      bad_client = VERGEClient.new
-      expect(bad_client.valid?).to eql(false)
-    end
-
-    it 'accepts valid client' do
-      expect(valid_client.valid?).to eql(true)
-    end
-  end
-end
-
-describe VERGEClient, 'client method calls' do
-  let(:valid_client) do
-    VERGEClient.new(user: 'vergerpcusername', password: 'vergerpcpassword')
+  it 'reports supported RPC methods through respond_to?' do
+    expect(client).to respond_to(:get_blockchain_info)
+    expect(client).not_to respond_to(:not_a_real_method)
   end
 
-  it 'calls client methods correctly' do
-    addr = valid_client.get_new_address
-    expect(addr[0]).to eql('D')
-  end
+  it 'uses global configuration as defaults' do
+    original_port = described_class.configuration.port
+    described_class.configure { |config| config.port = 18_334 }
 
-  it 'using results as args' do
-    new_wallet_addr = valid_client.get_new_address
-    my_balance = valid_client.get_balance(new_wallet_addr)
-    expect(my_balance).to eql(0.0)
-  end
-end
-
-describe VERGEClient, 'client configuration' do
-  it 'configures itself properly' do
-    VERGEClient.configure do |config|
-      config.user = 'vergerpcusername'
-      config.password = 'vergerpcpassword'
-    end
-    client = VERGEClient.new
-    expect(client.valid?).to eql(true)
+    configured = described_class.new.instance_variable_get(:@client)
+    expect(configured.options[:port]).to eq(18_334)
+  ensure
+    described_class.configuration.port = original_port
   end
 end

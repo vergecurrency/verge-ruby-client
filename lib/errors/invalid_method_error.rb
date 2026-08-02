@@ -5,11 +5,8 @@
 class VERGEClient
   # Raised when an invalid method is invoked.
   class InvalidMethodError < StandardError
-    attr_accessor :message
-
     def initialize(method_name)
-      super()
-      @message = "#{method_name} is not a valid method."
+      super("#{method_name} is not a valid method.")
     end
   end
 end

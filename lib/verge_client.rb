@@ -32,7 +32,7 @@ class VERGEClient
 
   # Configuration for the VERGE Client.
   class Configuration
-    attr_accessor :host, :port, :protocol, :user, :password
+    attr_accessor :host, :port, :protocol, :user, :password, :open_timeout, :read_timeout
 
     def initialize
       self.host = 'localhost'
@@ -40,6 +40,8 @@ class VERGEClient
       self.protocol = :http
       self.user = 'rpcuser'
       self.password = 'rpcpassword'
+      self.open_timeout = 5
+      self.read_timeout = 30
     end
   end
 end

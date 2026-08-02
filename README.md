@@ -10,6 +10,21 @@ Verge-Ruby is a gem that makes it easy to interact with the Verge blockchain in 
 The only requirement is a running Verge daemon ([verged](https://github.com/vergecurrency/verge)). Make sure to check out the [doc section](https://github.com/vergecurrency/verge/tree/master/doc) and follow the instructions for your os, or download the appropriate version for your platform from the releases tab.
 NOTICE: by default verged will only allow local connections.
 
+## Testing
+
+Run the deterministic unit suite with:
+
+```sh
+bundle exec rake spec
+```
+
+The `Live verged regtest` GitHub Actions workflow downloads the official Verge
+Core v26.7 Linux release, verifies its SHA-256 checksum, starts `verged` on an
+isolated regtest chain, and runs `spec/live_regtest_spec.rb` against its JSON-RPC
+server. To run that spec locally, start a regtest daemon and set
+`LIVE_VERGED=1`; `VERGE_RPC_HOST`, `VERGE_RPC_PORT`, `VERGE_RPC_USER`, and
+`VERGE_RPC_PASSWORD` can override the test defaults.
+
 ## Installation
 
 Add this line to your application's Gemfile:

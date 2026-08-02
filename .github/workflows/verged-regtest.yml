@@ -1,0 +1,98 @@
+name: Live verged regtest
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  VERGE_VERSION: v26.7
+  VERGE_ARCHIVE: verge-ubuntu24-appimages.zip
+  VERGE_ARCHIVE_SHA256: f1476ac7e5a5d5ccfac1d2c79104c4cf4cf62de979e45448c33d180dfee34799
+  VERGE_RPC_HOST: 127.0.0.1
+  VERGE_RPC_PORT: '18443'
+  VERGE_RPC_USER: verge-ruby
+  VERGE_RPC_PASSWORD: verge-ruby-regtest
+
+jobs:
+  regtest:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Download Verge Core
+        run: |
+          curl --fail --location --retry 3 \
+            --output "$VERGE_ARCHIVE" \
+            "https://github.com/vergecurrency/verge/releases/download/$VERGE_VERSION/$VERGE_ARCHIVE"
+          echo "$VERGE_ARCHIVE_SHA256  $VERGE_ARCHIVE" | sha256sum --check
+
+      - name: Extract verged AppImage
+        run: |
+          unzip -j "$VERGE_ARCHIVE" verged-x86_64.AppImage
+          chmod +x verged-x86_64.AppImage
+          ./verged-x86_64.AppImage --appimage-extract >/dev/null
+          mv squashfs-root verged-appimage
+
+      - name: Start verged in regtest
+        run: |
+          mkdir -p "$RUNNER_TEMP/verge-regtest"
+          nohup ./verged-appimage/AppRun \
+            -regtest \
+            -server=1 \
+            -listen=0 \
+            -dnsseed=0 \
+            -discover=0 \
+            -without-tor \
+            -datadir="$RUNNER_TEMP/verge-regtest" \
+            -rpcbind="$VERGE_RPC_HOST" \
+            -rpcport="$VERGE_RPC_PORT" \
+            -rpcuser="$VERGE_RPC_USER" \
+            -rpcpassword="$VERGE_RPC_PASSWORD" \
+            >"$RUNNER_TEMP/verged.log" 2>&1 &
+          echo "$!" >"$RUNNER_TEMP/verged.pid"
+
+          for attempt in {1..60}; do
+            if curl --silent --fail \
+              --user "$VERGE_RPC_USER:$VERGE_RPC_PASSWORD" \
+              --header 'content-type: application/json' \
+              --data '{"jsonrpc":"1.0","id":"ready","method":"getblockchaininfo","params":[]}' \
+              "http://$VERGE_RPC_HOST:$VERGE_RPC_PORT/" >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+
+          cat "$RUNNER_TEMP/verged.log"
+          exit 1
+
+      - name: Test client against live verged
+        env:
+          LIVE_VERGED: '1'
+        run: bundle exec rspec spec/live_regtest_spec.rb
+
+      - name: Show daemon log on failure
+        if: failure()
+        run: cat "$RUNNER_TEMP/verged.log"
+
+      - name: Stop verged
+        if: always()
+        run: |
+          if test -f "$RUNNER_TEMP/verged.pid"; then
+            kill "$(cat "$RUNNER_TEMP/verged.pid")" 2>/dev/null || true
+          fi

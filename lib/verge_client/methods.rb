@@ -13,13 +13,16 @@ class VERGEClient
     get_addresses_by_account
     get_balance
     get_block
+    get_blockchain_info
     get_block_count
     get_block_hash
+    get_best_block_hash
     get_connection_count
     get_difficulty
     get_generate
     get_hashes_per_sec
     get_info
+    get_mempool_info
     get_memory_pool
     get_mining_info
     get_new_address
@@ -27,6 +30,7 @@ class VERGEClient
     get_received_by_account
     get_received_by_address
     get_transaction
+    get_wallet_info
     get_work
     help
     import_priv_key
@@ -37,6 +41,7 @@ class VERGEClient
     list_since_block
     list_transactions
     list_unspent
+    list_wallets
     move
     send_from
     send_many
@@ -50,6 +55,7 @@ class VERGEClient
     stop
     validate_address
     verify_message
+    uptime
     wallet_lock
     wallet_passphrase
     wallet_passphrase_change
